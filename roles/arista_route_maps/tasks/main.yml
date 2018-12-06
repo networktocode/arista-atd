@@ -1,0 +1,5 @@
+---
+- name: build arista_route_maps
+  template: >
+    src=route_maps.j2
+    dest={{ build_directory }}/091_route_maps

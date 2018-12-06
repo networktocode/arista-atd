@@ -1,0 +1,176 @@
+######################### Example Section ##########################
+  #
+  # INTERFACE VLANS
+  #
+  # - name: EXAMPLE_VLAN
+  #   description: "LAYER 3 ROUTED INTERFACE VLAN"
+  #   mode: vlan_l3_ipv4
+  #   mtu: 1500
+  #   ipv4_address: 10.666.0.2/21
+  #   virtual_router: 10.666.0.1
+  #   dhcp_helper:
+  #     - standard
+  #     - windows_pxe
+  #     - unix_pxe
+  #     - 1.1.1.3
+  #
+  # PHYSICAL INTERFACES
+  #
+  # # L3 ROUTED INTERFACE
+  # - name: Ethernet1/1
+  #   speed: 100gfull
+  #   mode: l3_ipv4
+  #   description: "LAYER 3 ROUTED INTERFACE EXAMPLE"
+  #   ipv4_address: 10.6.6.6/31
+  #
+  # # L2 SWITCHPORT IN A PORT-CHANNEL BOND 
+  # - name: Ethernet1/1
+  #   mode: channel_group
+  #   channel_group:
+  #     id: 666
+  #     mode: active
+  #   description: "LAYER 2 SWITCHED PORT-CHANNEL INTERFACE"
+  #   trunk:
+  #     native_vlan: 666
+  #     vlan: "all"
+  #     # portfast_type: "network"
+  #     stp_bpduguard: False
+  #
+  # # L2 SWITCHPORT IN ACCESS MODE
+  # - name: Ethernet1/1
+  #   mode: l2_access
+  #   description: "LAYER 2 SWITCHED ACCESS PORT"
+  #   vlan: 666
+  #
+  # - name: Ethernet1/1
+  #   mode: l2_trunk
+  #   description: "LAYER 2 SWITCHED TRUNK PORT"
+  #   trunk:
+  #     native_vlan: 1
+  #     vlan: 6-666
+  #     # portfast_type: "network"
+  #     stp_bpduguard: False
+  #
+  # LOOPBACKS
+  #
+  # interface_loopbacks:
+  #   - name: lo0
+  #     ipv4_address: 172.16.255.111/32
+  #     mode: loopback
+  #
+  ####################################################################
+
+
+######################### Interface VLANs ##########################
+
+interfaces_vlans:
+  - name: Vlan4094
+    description: MLAG-PEER
+    mode: vlan_l3_ipv4
+    mtu: 1500
+    ipv4_address: 192.168.40.95/31
+
+  - name: Vlan11
+    description: ESXi_HOSTS
+    mode: vlan_l3_ipv4
+    mtu: 1500
+    ipv4_address: 10.11.11.2/24
+    virtual_router: 10.11.11.1
+
+  - name: Vlan12
+    description: ESXi_WINDOWS_VMS
+    mode: vlan_l3_ipv4
+    mtu: 1500
+    ipv4_address: 10.11.12.2/24
+    virtual_router: 10.11.12.1
+
+  - name: Vlan13
+    description: ESXi_LINUX_VMS
+    mode: vlan_l3_ipv4
+    mtu: 1500
+    ipv4_address: 10.11.13.2/24
+    virtual_router: 10.11.13.1
+
+  - name: Vlan14
+    description: LEGACY_HOSTS
+    mode: vlan_l3_ipv4
+    mtu: 1500
+    ipv4_address: 10.11.14.2/24
+    virtual_router: 10.11.14.1
+
+interface_vxlans:
+  - vxlan_id: 1
+    source_interface: Loopback1
+    mapping: 
+      - vlan: 11
+        vni: 11
+      - vlan: 12
+        vni: 12
+      - vlan: 13
+        vni: 13
+      - vlan: 14
+        vni: 14
+
+interface_loopbacks:
+  - name: Loopback0
+    ipv4_address: "{{ bgp.router_id | default('169.254.0.1')  }}/32"
+
+  - name: Loopback1
+    ipv4_address: 2.2.2.2/32
+    # ipv4_secondary: 
+    #   - 169.255.1.0/32 # PLACEHOLDER
+
+#
+# ####################### Physical Connections #######################
+#
+interfaces_physical:
+  # management ports
+  - name: "{{ mgmt_interface }}"
+    vrf: MGMT
+    ipv4_address: "10.0.0.7/16"
+    mode: management
+
+
+##### SPINE #####
+
+  # SPINE A
+  - name: Ethernet1
+    speed: 100gfull
+    mode: l3_ipv4
+    mtu: 1500
+    description: "spine01_Ethernet1"
+    ipv4_address: 100.1.14.14/24
+
+  # SPINE B
+  - name: Ethernet2
+    speed: 100gfull
+    mode: l3_ipv4
+    mtu: 1500
+    description: "spine02_Ethernet1"
+    ipv4_address: 100.2.14.14/24
+
+
+##### MLAG #####
+
+  # MLAG ports
+  - name: Ethernet3
+    speed: 100gfull
+    mode: channel_group
+    channel_group:
+      id: 100
+      mode: active
+    description: "MLAG-PEER"
+    mlag: True
+
+
+##### CONNECTIONS TO SERVERS APPLIANCES #####
+
+  - name: Ethernet4
+    mode: l2_access
+    description: "HOST4_VLAN11"
+    vlan: 11
+
+  - name: Ethernet5
+    mode: l2_access
+    description: "HOST4_VLAN12"
+    vlan: 12

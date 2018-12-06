@@ -1,0 +1,5 @@
+---
+- name: build arista_mlag
+  template: >
+    src=mlag.j2
+    dest={{ build_directory }}/010_mlag

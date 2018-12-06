@@ -1,0 +1,68 @@
+{% if interfaces_physical is defined %}
+{% for iface in interfaces_physical %}
+interface {{ iface.name }}
+{% if iface.description is defined %}
+   description {{ iface.description }}
+{% endif %}
+{% if iface.mtu is defined %}
+   mtu {{ iface.mtu }}
+{% endif %}
+{% if iface.speed is defined and platform != "vEOS" %}
+   speed forced {{ iface.speed }}
+{% endif %}
+{% if iface.mode == 'management' %}
+   vrf forwarding {{ iface.vrf }}
+   ip address {{ iface.ipv4_address }}
+{% elif iface.mode == 'l3_ipv4' %}
+   no switchport
+   ip address {{ iface.ipv4_address }}
+{% elif iface.mode == 'l3_ipv6' %}
+   no switchport
+   ip address {{ iface.ipv6_address }}
+{% elif iface.mode == 'l2_access' %}
+   switchport mode access
+   switchport access vlan {{ iface.vlan }}
+   spanning-tree portfast edge
+   {# spanning-tree bpduguard enable #}
+{% elif iface.mode == 'l2_trunk' %}
+{% if iface.trunk.native_vlan is defined %}
+   switchport trunk native vlan {{ iface.trunk.native_vlan }}
+{% endif %}
+   switchport trunk allowed vlan {{ iface.trunk.vlan }}
+   switchport mode trunk
+{% elif iface.mode == 'channel_group' %}
+{% if iface.access is defined %}
+   switchport mode access
+   switchport access vlan {{ iface.access.vlan }}
+{% if iface.access.portfast_type is defined %}
+{% if iface.access.portfast_type == 'edge' %}
+   spanning-tree portfast edge
+   spanning-tree bpduguard enable
+{% endif %}
+{% endif %}
+{% endif %}
+{% if iface.trunk is defined %}
+{% if iface.trunk.native_vlan is defined %}
+   switchport trunk native vlan {{ iface.trunk.native_vlan }}
+{% endif %}
+   switchport trunk allowed vlan {{ iface.trunk.vlan }}
+   switchport mode trunk
+{% endif %}
+   channel-group {{ iface.channel_group.id }} mode {{ iface.channel_group.mode }}
+{% if iface.mlag is not defined %}
+{% if iface.trunk is defined %}
+{% if iface.trunk.portfast_type is defined %}
+{% if iface.trunk.portfast_type == 'edge' %}
+   spanning-tree portfast edge
+   spanning-tree bpduguard enable
+{% else %}
+{% endif %}
+{% endif %}
+{% endif %}
+{% endif %}
+{% else %}
+   switchport mode access
+{% endif %}
+!
+{% endfor %}
+{% endif %}

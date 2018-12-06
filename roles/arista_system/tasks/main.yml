@@ -1,0 +1,5 @@
+---
+- name: build system parameters
+  template: >
+    src=system.j2
+    dest={{ build_directory }}/001_system

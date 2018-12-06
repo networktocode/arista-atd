@@ -1,0 +1,4 @@
+---
+  - import_playbook: build_directories.yml
+  - import_playbook: build_arista.yml
+  - import_playbook: apply_configuration.yml

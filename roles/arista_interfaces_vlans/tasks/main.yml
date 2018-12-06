@@ -1,0 +1,5 @@
+---
+- name: build arista_interfaces_vlans
+  template: >
+    src=interfaces_vlans.j2
+    dest={{ build_directory }}/008_interfaces_vlans

@@ -1,0 +1,5 @@
+temp_directory: "/tmp/ansible/"
+build_directory: "{{ temp_directory }}/{{ inventory_hostname }}/tmp"
+arista_config_directory: "config"
+arista_config_file: "{{ inventory_hostname }}.conf"
+arista_config: "{{ arista_config_directory }}/{{ arista_config_file }}"

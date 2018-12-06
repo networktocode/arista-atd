@@ -1,0 +1,23 @@
+{% if stp is defined %}
+spanning-tree mode {{ stp.mode }}
+{% if stp.exclude is defined %}
+{% for vlan in stp.exclude %}
+no spanning-tree vlan {{ vlan }}
+{% endfor %}
+{% endif %}
+!
+{% if stp.configuration is defined %}
+spanning-tree mst configuration
+{% for each in stp.configuration %}
+    name {{ each.name }}
+    revision {{ each.revision }}
+    instance {{ each.instance }} vlans {{ each.vlan }}
+{% endfor %}
+{% endif %}
+!
+{% if stp.priority is defined %}
+{% for mstp in stp.priority %}
+spanning-tree mst {{ mstp.instance }} priority {{ mstp.priority }}
+{%endfor %}
+{% endif %}
+{% endif %}

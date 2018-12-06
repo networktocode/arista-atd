@@ -1,0 +1,28 @@
+# IF BUILDING A TRUNK PORT-CHANNEL, USE THE TEMPLATE BELOW
+#
+# interface_portchannels:
+#   - id: 11
+#     description: "ORCDB_HOST_1_DATA"
+#     trunk:
+#       native_vlan: 84
+#       vlan: "83-85"
+#       portfast_type: "edge"
+#
+# IF BUILDING AN ACCESS PORT-CHANNEL, USE THE TEMPLATE BELOW
+#
+# interface_portchannels:
+#   - id: 11
+#     description: "ORCDB_HOST_1_DATA"
+#     access:
+#       vlan: "86"
+#       portfast_type: "edge"
+
+
+interface_portchannels:
+    # MLAG PORT_CHANNEL
+  - id: 100
+    description: "MLAG-PEER"
+    trunk:
+        trunk_group: "MLAG-PEER"
+    mlag: True
+

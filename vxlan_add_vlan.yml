@@ -1,0 +1,68 @@
+---
+  - name: '### Adding VLAN to EVPN ###'
+    hosts: device_roles_leaf
+    connection: local
+    gather_facts: false
+    tasks:
+
+      ######################################################
+      ##### Creating VLAN if it doesn't already exist ######
+      ######################################################
+      # - name: print evpnvlan
+      #   debug:
+      #     var: evpnvlan
+
+      # - name: print bgp.autonomous_system
+      #   debug:
+      #     var: bgp.autonomous_system
+
+      # - name: print bgp.router_id
+      #   debug:
+      #     var: bgp.router_id
+
+      # - name: print rd {{ bgp.router_id | default('169.254.0.1')  }}:{{ evpnvlan }}
+      #   debug:
+      #     msg: "rd {{ bgp.router_id | default('169.254.0.1')  }}:{{ evpnvlan }}"
+
+      # - name: print route-target both {{ evpnvlan }}:{{ evpnvlan }}
+      #   debug:
+      #     msg: "route-target both {{ evpnvlan }}:{{ evpnvlan }}"
+
+      - name: creating VLAN
+        eos_config:
+          lines:
+            - "vlan {{ evpnvlan }}"
+          authorize: true
+          provider:
+            host: "{{ ansible_host }}"
+            transport: eapi
+            validate_certs: no
+            timeout: 60
+
+      - name: provisioning bgp's evpn 
+        eos_config:
+          lines:
+            - "vlan {{ evpnvlan }}"
+            - "rd {{ bgp.router_id | default('169.254.0.1')  }}:{{ evpnvlan }}"
+            - "route-target both {{ evpnvlan }}:{{ evpnvlan }}"
+            - redistribute learned
+          parents: "router bgp {{ bgp.autonomous_system }}"
+          replace: block
+          authorize: true
+          provider:
+            host: "{{ ansible_host }}"
+            transport: eapi
+            validate_certs: no
+            timeout: 60
+
+      - name: Send notification message via Slack all options
+        slack:
+            token: '{{ slack_token }}'
+            msg: 'Provisioning of vlan {{ evpnvlan }} on {{ inventory_hostname }} is complete'
+            channel: '#ansible'
+            username: 'Ansible on {{ inventory_hostname }}'
+            icon_url: http://alesnosek.com/images/posts/ansible_logo.png
+            link_names: 0
+            parse: 'none'
+        delegate_to: localhost
+

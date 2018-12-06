@@ -1,0 +1,5 @@
+---
+- name: build arista_routing
+  template: >
+    src=routing.j2
+    dest={{ build_directory }}/009_routing

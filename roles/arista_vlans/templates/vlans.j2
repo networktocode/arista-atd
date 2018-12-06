@@ -1,0 +1,11 @@
+{% if vlans is defined %}
+{% for each_vlan in vlans %}
+vlan {{ each_vlan.id }}
+    name {{ each_vlan.name }}
+{% if each_vlan.trunk_group is defined %}
+    trunk group {{ each_vlan.trunk_group }}
+{% endif %}
+!
+{% endfor %}
+!
+{% endif %}

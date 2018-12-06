@@ -1,0 +1,28 @@
+daemon:
+  - name: TerminAttr
+    string: "exec /usr/bin/TerminAttr -ingestgrpcurl=192.168.1.2:9910 -taillogs -ingestauth=key, -ingestvrf MGMT"
+    state: no shutdown
+
+email:
+  from_user: "arista_datacenter@networktocode.com"
+  vrf: "MGMT"
+  server: "mailrouter@networktocode.com"
+
+load_interval: "30"
+
+platform: "vEOS"
+queue_monitor: "length"
+
+name_server:
+  vrf: "MGMT"
+  server: "1.1.1.1"
+
+domain_name: "networktocode.com"
+
+ntp:
+  source: "{{ mgmt_interface }}"
+  server: "192.168.1.10"
+  vrf: "MGMT"
+
+virtual_router:
+  mac_address: ba:dd:06:c1:5c:00

@@ -1,0 +1,37 @@
+prefix_lists:
+  - name: DEFAULT_ROUTE
+    lines:
+      - id: 10
+        action: permit
+        prefix: 0.0.0.0/0
+  - name: ANY
+    lines:
+      - id: 5
+        action: permit
+        prefix: 0.0.0.0/0 le 32
+  - name: VMWARE
+    lines:
+      - id: 10
+        action: permit
+        prefix: 10.11.11.0/24
+      - id: 20
+        action: permit
+        prefix: 10.11.12.0/24
+      - id: 30
+        action: permit
+        prefix: 10.11.13.0/24
+  - name: LEGACY
+    lines:
+      - id: 10
+        action: permit
+        prefix: 10.11.14.0/24
+  - name: LOOPBACK0
+    lines:
+      - id: 10
+        action: permit
+        prefix: 1.1.1.0/24 ge 24
+  - name: LOOPBACK1
+    lines:
+      - id: 10
+        action: permit
+        prefix: 2.2.2.0/24 ge 24

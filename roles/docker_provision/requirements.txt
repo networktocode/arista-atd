@@ -1,0 +1,16 @@
+ansible==2.6.*
+ncclient
+jxmlease
+junos-eznc
+napalm
+jmespath
+pyyaml
+pytest
+bigsuds
+#suds
+f5_sdk
+git+https://github.com/mzbroch/pyntc.git@f5_device#egg=pyntc
+git+https://github.com/mzbroch/ntc-ansible.git@f5_device#egg=ntc-ansible
+hvac
+jsnapy
+pyeapi

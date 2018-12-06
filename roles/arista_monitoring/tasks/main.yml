@@ -1,0 +1,5 @@
+---
+- name: build arista_monitoring
+  template: >
+    src=monitoring.j2
+    dest={{ build_directory }}/099_monitoring

@@ -1,0 +1,14 @@
+ip_routing:
+  enabled: True
+  vrf:
+    - MGMT
+
+static:
+  - destination: "0.0.0.0/0"
+    vrf: "MGMT"
+    next_hop: "10.0.0.2"
+    name: "management"
+
+ibgp_password: "ibgp_password"
+ebgp_password: "ebgp_password"
+evpn_password: "evpn_password"

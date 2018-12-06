@@ -1,0 +1,7 @@
+{% if vrfs is defined %}
+{% for each_vrf in vrfs %}
+vrf definition {{ each_vrf.name }}
+    rd {{ each_vrf.route_distinguisher }}
+{% endfor %}
+!
+{% endif %}

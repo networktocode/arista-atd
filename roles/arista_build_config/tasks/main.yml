@@ -1,0 +1,7 @@
+---
+- name: check if directory is present
+  file: path={{ arista_config_directory }} state=directory
+  run_once: true
+
+- name: assemble configurations and copy to arista configuration
+  assemble: src={{ build_directory }} dest={{ arista_config }}

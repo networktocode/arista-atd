@@ -1,0 +1,62 @@
+bgp:
+  autonomous_system: 101.1
+  router_id: "1.1.1.11"
+  maximum_paths: 32
+  redistribute:
+    - connected 
+  distance:
+    external: 20
+    internal: 200
+    local: 200
+  peer_group:
+
+    # MLAG PEER
+    - name: leaf02
+      password: "{{ ibgp_password }}"
+      description: inter-leaf peering in case of uplink failures
+      neighbor:
+        - 192.168.40.95
+      autonomous_system: 101.1
+      activate: True
+      default_originate: False
+      next_hop_self: True
+      address_family_ipv4: True
+      # address_family_ipv6: False
+      # address_family_evpn: False
+      policy_in: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+      policy_out: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+
+    # SPINES_UNDERLAY
+    - name: spine
+      password: "{{ ebgp_password }}"
+      description: data center spines
+      neighbor:
+        - 100.1.11.1
+        - 100.2.11.2
+      autonomous_system: 101.0
+      activate: True
+      default_originate: False
+      address_family_ipv4: True
+      # address_family_ipv6: False
+      # address_family_evpn: False
+      # policy_in: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+      # policy_out: BGP_POD1_PUBLIC
+
+    # SPINES_OVERLAY
+    - name: spine_evpn
+      password: "{{ evpn_password }}"
+      description: overlay routing via EVPN
+      neighbor:
+        - 1.1.1.1
+        - 1.1.1.2
+      autonomous_system: 101.0
+      activate: True
+      default_originate: False
+      multihop: True
+      address_family_ipv4: Disabled
+      address_family_ipv6: Disabled
+      address_family_evpn: True
+      update_source: Loopback0
+      send_community: True
+      # policy_in: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+      # policy_out: BGP_POD1_PUBLIC

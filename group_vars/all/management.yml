@@ -1,0 +1,28 @@
+management:
+  api:
+    protocol:
+        - "http localhost"
+        - "unix-socket"
+    enabled: True
+    vrf:
+        - name: "MGMT"
+          enabled: True
+  cvx:
+    enabled: True
+    server: "192.168.1.3"
+    source_interface: "{{ mgmt_interface }}"
+  ssh:
+    authentication: "password"
+    vrf:
+        - name: "MGMT"
+          enabled: True
+  queue_monitor:
+    streaming: True
+    vrf: MGMT
+
+vendor: arista
+test: False
+happy: True
+mgmt_interface: Management1
+mgmt_netmask: "/24"
+platform: "vEOS"

@@ -1,0 +1,5 @@
+---
+- name: build arista_prefix_lists
+  template: >
+    src=prefix_lists.j2
+    dest={{ build_directory }}/090_prefix_lists

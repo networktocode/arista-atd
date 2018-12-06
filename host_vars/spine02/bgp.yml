@@ -1,0 +1,85 @@
+bgp:
+  autonomous_system: 101.0
+  router_id: "1.1.1.2"
+  maximum_paths: 32
+  redistribute:
+    - connected 
+  distance:
+    external: 20
+    internal: 200
+    local: 200
+  peer_group:
+
+    # pod1_underlay
+    - name: pod1_underlay
+      password: "{{ ebgp_password }}"
+      description: connection to pod group 1
+      neighbor:
+        - 100.2.11.11
+        - 100.2.12.12
+      autonomous_system: 101.1
+      activate: True
+      default_originate: True
+      next_hop_self: True
+      address_family_ipv4: True
+      # address_family_ipv6: False
+      # address_family_evpn: False
+      # policy_in: BGP_DENY_ONLY_DEFAULT_ROUTE
+      # policy_out: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+
+    # pod1_overlay
+    - name: pod1_overlay
+      password: "{{ evpn_password }}"
+      description: overlay routing via EVPN
+      neighbor:
+        - 1.1.1.11
+        - 1.1.1.12
+      autonomous_system: 101.1
+      activate: True
+      default_originate: False
+      multihop: True
+      address_family_ipv4: Disabled
+      address_family_ipv6: Disabled
+      address_family_evpn: True
+      update_source: Loopback0
+      send_community: True
+      next_hop_unchanged: True
+      # policy_in: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+      # policy_out: BGP_POD1_PUBLIC
+
+    # pod2_underlay
+    - name: pod2_underlay
+      password: "{{ ebgp_password }}"
+      description: connection to pod group 2
+      neighbor:
+        - 100.2.13.13
+        - 100.2.14.14
+      autonomous_system: 101.2
+      activate: True
+      default_originate: True
+      next_hop_self: True
+      address_family_ipv4: True
+      # address_family_ipv6: False
+      # address_family_evpn: False
+      # policy_in: BGP_DENY_ONLY_DEFAULT_ROUTE
+      # policy_out: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+
+    # pod2_overlay
+    - name: pod2_overlay
+      password: "{{ evpn_password }}"
+      description: overlay routing via EVPN
+      neighbor:
+        - 1.1.1.13
+        - 1.1.1.14
+      autonomous_system: 101.2
+      activate: True
+      default_originate: False
+      multihop: True
+      address_family_ipv4: Disabled
+      address_family_ipv6: Disabled
+      address_family_evpn: True
+      update_source: Loopback0
+      send_community: True
+      next_hop_unchanged: True
+      # policy_in: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+      # policy_out: BGP_POD1_PUBLIC

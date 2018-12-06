@@ -1,0 +1,18 @@
+{% if ospf is defined %}
+router ospf {{ ospf.process_id }}
+    router-id {{ ospf.router_id }}
+{% if ospf.redistribute is defined %}
+{% for statement in ospf.redistribute %}
+{% if statement.route_map is defined %}
+    redistribute {{ statement.protocol }} route-map {{ statement.route_map }}
+{% else %}
+    redistribute {{ statement.protocol }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if ospf.networks is defined %}
+{% for network in ospf.networks %}
+    network {{ network.prefix }} area {{ network.area }}
+{% endfor %}
+{% endif %}
+{% endif %}

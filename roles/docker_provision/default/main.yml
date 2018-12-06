@@ -1,0 +1,5 @@
+---
+# defaults file for docker-role
+local_requirements: "{{ playbook_dir }}/requirements.txt"
+remote_requirements: "/tmp/requirements.txt"
+venv: '/var/lib/awx/venv/ansible'

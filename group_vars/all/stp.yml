@@ -1,0 +1,14 @@
+stp:
+  mode: "mstp"
+  exclude:
+    - 4094
+  configuration:
+    - name: arista_atd
+      instance: 1
+      revision: 1
+      vlan: 1-4093
+  priority: 
+    - instance: 0
+      priority: 4096
+    - instance: 1
+      priority: 4096

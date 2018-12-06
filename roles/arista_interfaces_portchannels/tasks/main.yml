@@ -1,0 +1,5 @@
+---
+- name: build arista_interface_portchannels
+  template: >
+    src=portchannels.j2
+    dest={{ build_directory }}/006_portchannels

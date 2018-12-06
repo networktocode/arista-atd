@@ -1,0 +1,43 @@
+route_maps:
+  - name: BGP_DENY_ONLY_DEFAULT_ROUTE
+    lines:
+      - sequence: 10
+        action: deny
+        match:
+          - ip address prefix-list DEFAULT_ROUTE
+      - sequence: 20
+        action: permit
+        match:
+          - ip address prefix-list ANY
+  - name: BGP_PERMIT_ONLY_DEFAULT_ROUTE
+    lines:
+      - sequence: 10
+        action: permit
+        match:
+          - ip address prefix-list DEFAULT_ROUTE
+      - sequence: 20
+        action: deny
+        match:
+          - ip address prefix-list ANY
+  - name: BGP_PERMIT_ALL
+    lines:
+      - sequence: 10
+        action: permit
+        match:
+          - ip address prefix-list ANY
+  - name: BGP_DENY_ALL
+    lines:
+      - sequence: 10
+        action: deny
+        match:
+          - ip address prefix-list ANY
+  - name: BGP_LOOPBACKS
+    lines:
+      - sequence: 10
+        action: permit
+        match:
+          - ip address prefix-list LOOPBACK0
+      - sequence: 20
+        action: permit
+        match:
+          - ip address prefix-list LOOPBACK1

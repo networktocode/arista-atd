@@ -1,0 +1,6 @@
+mlag:
+  domain_id: "pod1"
+  local_interface: "Vlan4094"
+  peer_address: "192.168.40.95"
+  peer_link: "Port-Channel100"
+  device_id: "A"

@@ -1,0 +1,52 @@
+monitoring:
+  logging:
+    buffered: 20480
+    source_interface: 
+      vrf: MGMT
+      interface: "{{ mgmt_interface }}"
+    remote:
+      vrf: MGMT
+      server:
+        - 192.168.1.4
+        - 192.168.1.5
+    traps:
+      level: 6
+  snmp:
+    vrf:
+      - name: MGMT
+        source_interface: "{{ mgmt_interface }}"
+    views:
+      - name: all
+        mibs:
+          - iso
+          - system
+    manager:
+      hosts:
+        - server: 192.168.1.6
+          vrf: MGMT
+          version: 3
+          auth: solarwinds
+        - server: 192.168.1.7
+          vrf: MGMT
+          version: 3
+          auth: nagios
+        - server: 192.168.1.8
+          vrf: MGMT
+          version: 3
+          auth: logstash
+      traps:
+        - bgp
+        - entity
+        - lldp
+        - snmp
+    groups:
+      - name: arista_atd
+        view: all
+        permissions: read
+        version: v3
+    users:
+      - name: snmp_user
+        group: arista_atd
+        version: v3
+        auth_method: sha
+        auth_password: "arista_atd_snmp"

@@ -1,0 +1,79 @@
+{#/////   DAEMON SECTION   \\\\\#}
+{% if daemon is defined %}
+{% for each in daemon %}
+daemon {{ each.name }}
+   {{ each.string }}
+   {{ each.state }}
+{% endfor %}
+!
+{% endif %}
+{#/////   EMAIL CONFIGURATION   \\\\\#}
+{% if email is defined %}
+email
+   from-user {{ email.from_user }}
+   server vrf {{ email.vrf }} {{ email.server }}
+!
+{% endif %}
+!
+{#/////   HOSTNAME   \\\\\#}
+hostname {{ inventory_hostname }}
+!
+{#/////   LOAD INTERVAL   \\\\\#}
+{% if load_interval is defined %}
+load-interval default {{ load_interval }}
+{% else %}
+load-interval default 30
+{% endif %}
+!
+{#/////   QUEUE MONITOR   \\\\\#}
+{% if platform != "vEOS" %}
+{% if queue_monitor is defined %}
+queue-monitor {{ queue_monitor }}
+!
+{% endif %}
+{% endif %}
+{#/////   LLDP MANAGEMENT ADDRESS   \\\\\#}
+lldp management-address all
+!
+{#/////   NAME SERVERS   \\\\\#}
+{% if name_server is defined %}
+{% if name_server.vrf is defined %}
+ip name-server vrf {{ name_server.vrf }} {{ name_server.server }}
+!
+{% else %}
+ip name-server {{ name_server.server }}
+!
+{% endif %}
+{% endif %}
+{#/////   DOMAIN NAME   \\\\\#}
+{% if domain_name is defined %}
+ip domain-name {{ domain_name }}
+!
+{% endif %}
+{#/////   NTP SERVER   \\\\\#}
+{% if ntp is defined %}
+ntp source {{ ntp.source }}
+{% if ntp.vrf is defined %}
+ntp server vrf {{ ntp.vrf }} {{ ntp.server }}
+{% else %}
+ntp server {{ ntp.server}}
+{% endif %}
+!
+{% endif %}
+{# TEMPORARY AAA SECTION, LEAVE COMMMENTED OUT
+    {% if aaa_tmp is defined %}
+    {{ aaa_tmp.auth }}
+    !
+    {{ aaa_tmp.root }}
+    !
+    {% if aaa_tmp.user is defined %}
+    {% for user in aaa_tmp.user %}
+    username {{ user.name }} privilege {{ user.privilege }} secret {{ user.secret }}
+    !
+    {% endfor %}
+    {% endif %}
+    !
+    {% endif %} 
+#}
+clock timezone CST6CDT
+!

@@ -1,0 +1,7 @@
+{% if prefix_lists is defined %}
+{% for list in prefix_lists %}
+{% for sequence in list.lines %}
+ip prefix-list {{ list.name }} seq {{ sequence.id }} {{ sequence.action }} {{ sequence.prefix }}
+{% endfor %}
+{% endfor %}
+{% endif %}

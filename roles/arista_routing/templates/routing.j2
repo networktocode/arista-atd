@@ -1,0 +1,32 @@
+{#/////   STATIC ROUTES   \\\\\#}
+{% if static is defined %}
+{% for route in static %}
+{#/////   VRF STATIC ROUTES   \\\\\#}
+{% if route.vrf is defined %}
+ip route vrf MGMT {{ route.destination }} {{ route.next_hop }} name {{ route.name}}
+{% else %}
+{#/////   NON-VRF STATIC ROUTES   \\\\\#}
+ip route {{ route.destination }} {{ route.next_hop }} name {{ route.name}}
+{% endif %}
+{% endfor %}
+{% endif %}
+!
+{#/////   ENABLE IP ROUTING   \\\\\#}
+{% if ip_routing is defined %}
+{% if ip_routing.enabled == True %}
+ip routing
+service routing protocols model multi-agent
+{% endif %}
+{#/////   VRF-AWARE ENABLE IP ROUTING   \\\\\#}
+{% if ip_routing.vrf is defined %}
+{% for vrf in ip_routing.vrf %}
+ip routing vrf {{ vrf }}
+{% endfor %}
+{% endif %}
+{% endif %}
+!
+{#/////   VIRTUAL ROUTER   \\\\\#}
+{% if virtual_router is defined %}
+ip virtual-router mac-address {{ virtual_router.mac_address }}
+!
+{% endif %}

@@ -1,0 +1,25 @@
+---
+  - name: '### BUILD THE CONFIGURATION PIECE-BY-PIECE ###'
+    hosts: device_roles_leaf, device_roles_spine
+    connection: local
+    gather_facts: false
+    roles:
+      - arista_system
+      - arista_aaa
+      - arista_stp
+      - arista_vlans
+      - arista_vrfs
+      - arista_interfaces_portchannels
+      - arista_interfaces_physical
+      - arista_interfaces_vlans
+      - arista_interfaces_vxlans
+      - arista_interfaces_loopbacks
+      - arista_routing
+      - arista_bgp
+      - arista_mlag
+      - arista_prefix_lists
+      - arista_route_maps
+      # - arista_ospf
+      - arista_management
+      - arista_monitoring
+      - arista_build_config

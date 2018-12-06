@@ -1,0 +1,16 @@
+vlans:
+   - name: "MLAG-PEER"
+     id: "4094"
+     trunk_group: "MLAG-PEER"
+   - name: "ESXi_HOSTS"
+     id: "11"
+     vxlan_enabled: True
+   - name: "ESXi_WINDOWS_VMS"
+     id: "12"
+     vxlan_enabled: True
+   - name: "ESXi_LINUX_VMS"
+     id: "13"
+     vxlan_enabled: False
+   - name: "LEGACY_HOSTS"
+     id: "14"
+     vxlan_enabled: False

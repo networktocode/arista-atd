@@ -1,0 +1,59 @@
+{% if management is defined %}
+{# QUEUE-MONITOR SECTION #}
+{% if management.queue_monitor is defined and platform != "vEOS"%}
+{% if management.queue_monitor.streaming == True %}
+queue-monitor streaming
+{% if management.queue_monitor.vrf is defined %}
+   vrf {{ management.queue_monitor.vrf }}
+   no shutdown
+{% else %}
+   no shutdown
+{% endif %}
+{% endif %}
+!
+{% endif %}
+{# MANAGEMENT API SECTION #}
+{% if management.api is defined %}
+management api http-commands
+{% for protocol in management.api.protocol %}
+   protocol {{ protocol }}
+{% endfor %}
+{% if management.api.enabled == True %}
+   no shutdown
+{% endif %}
+   !
+{# MANAGEMENT API VRF SECTION #}
+{% for vrf in management.api.vrf %}
+   vrf {{ vrf.name }}
+{% if vrf.enabled == True %}
+      no shutdown
+{% endif %}
+   !
+{% endfor %}
+!
+{% endif %}
+{# MANAGEMENT CVX SECTION #}
+{% if management.cvx is defined %}
+management cvx
+{% if management.cvx.enabled == True %}
+   no shutdown
+{% endif %}
+   server host {{ management.cvx.server }}
+   source-interface {{ management.cvx.source_interface }}
+!
+{% endif %}
+{# MANAGEMENT SSH SECTION #}
+{% if management.ssh is defined %}
+management ssh
+   authentication mode {{ management.ssh.authentication }}
+   !
+{# MANAGEMENT SSH VRF SECTION #}
+{% for vrf in management.ssh.vrf %}
+   vrf {{ vrf.name }}
+{% if vrf.enabled == True %}
+      no shutdown
+{% endif %}
+{% endfor %}
+!
+{% endif %}
+{% endif %}

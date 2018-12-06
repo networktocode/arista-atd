@@ -1,0 +1,5 @@
+---
+- name: build arista_interfaces_vxlans
+  template: >
+    src=interfaces_vxlans.j2
+    dest={{ build_directory }}/008_interfaces_vxlans

@@ -1,0 +1,71 @@
+---
+  - name: '### APPLY CONFIGURATION ###'
+    hosts: device_roles_leaf, device_roles_spine
+    connection: local
+    gather_facts: no
+    vars_prompt:
+      - name: prompt_username
+        prompt: "Please enter your username"
+      - name: prompt_password
+        prompt: "Please enter your password"
+        private: yes
+    tasks:
+
+      ######################################################
+      ##### Enable eAPI
+      ######################################################
+      - name: Ensure eAPI is enabled with no HTTP, HTTPS, local HTTP, and socket connections
+        eos_eapi:
+          state: started
+          http: false
+          https_port: 443
+          local_http: yes
+          # local_http_port: 80
+          vrf: MGMT
+          socket: yes
+          provider:
+            host: "{{ ansible_host }}"
+            username: "{{ prompt_username }}"
+            password: "{{ prompt_password }}"
+            transport: cli
+
+      ######################################################
+      ##### Jinja2 configuration
+      ######################################################
+      - name: apply config
+        eos_config:
+          src: "{{ arista_config }}"
+          authorize: true
+          provider:
+            host: "{{ ansible_host }}"
+            username: "{{ prompt_username }}"
+            password: "{{ prompt_password }}"
+            transport: eapi
+            validate_certs: no
+
+      ######################################################
+      ##### MOTD Banner
+      ######################################################
+      - name: configure the MOTD banner
+        eos_banner:
+          banner: motd
+          text: |
+            ********************************* WARNING *********************************
+            *                                                                         *
+            * This system is for authorized users only. This, and any other sessions, *
+            * can and will be monitored to determine whether or not it is being used  *
+            * by an authorized user.                                                  *
+            *                                                                         *
+            * By logging into this system, you are consenting to such monitoring, and *
+            * are advised that the system administrators retain the right to use any  *
+            * recorded session as evidence of criminal activity, if such activity is  *
+            * monitored.                                                              *
+            *                                                                         *
+            ********************************* WARNING *********************************
+          state: present
+          provider:
+            host: "{{ ansible_host }}"
+            username: "{{ prompt_username }}"
+            password: "{{ prompt_password }}"
+            transport: eapi
+            validate_certs: no

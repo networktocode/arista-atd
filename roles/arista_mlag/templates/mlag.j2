@@ -1,0 +1,8 @@
+{% if mlag is defined %}
+mlag configuration
+   domain-id {{ mlag.domain_id }}
+   local-interface {{ mlag.local_interface }}
+   peer-address {{ mlag.peer_address }}
+   peer-link {{ mlag.peer_link }}
+!
+{% endif %}

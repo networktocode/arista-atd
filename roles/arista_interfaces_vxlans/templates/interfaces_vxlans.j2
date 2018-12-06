@@ -1,0 +1,13 @@
+{% if interface_vxlans is defined %}
+{% for iface in interface_vxlans %}
+interface Vxlan {{ iface.vxlan_id }}
+   vxlan source-interface {{ iface.source_interface }}
+{% for each in iface.mapping %}
+   vxlan vlan {{ each.vlan }} vni {{ each.vni }}
+{% if flood_list is defined %}
+   vxlan vlan {{ each.vlan }} flood vtep {{ flood_list|join(' ') }}
+{% endif %}
+{% endfor %}
+!
+{% endfor %}
+{% endif %}

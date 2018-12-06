@@ -1,0 +1,127 @@
+{% if bgp is defined %}
+ip routing
+!
+router bgp {{ bgp.autonomous_system }}
+{#/////   BGP ROUTER ID   \\\\\#}
+{% if bgp.router_id is defined %}
+   router-id {{ bgp.router_id }}
+{% endif %}
+   bgp log-neighbor-changes
+{#/////   BGP MAXIMUM PATHS   \\\\\#}
+{% if bgp.maximum_paths is defined %}
+   maximum-paths {{ bgp.maximum_paths }} ecmp {{ bgp.maximum_paths }}
+{% endif %}
+{#/////   BGP ADMINISTRATIVE DISTANCE   \\\\\#}
+{% if bgp.distance is defined %}
+   distance bgp {{ bgp.distance.external }} {{ bgp.distance.internal }} {{ bgp.distance.local }}
+{% endif %}
+{#/////   BEGIN VXLAN VLAN MAPPINGS  \\\\\#}
+{% if vlans is defined %}
+{% for each_vlan in vlans %}
+{% if each_vlan.vxlan_enabled is defined and each_vlan.vxlan_enabled == True %}
+   vlan {{ each_vlan.id }}
+     rd {{ bgp.router_id | default('169.254.0.1')  }}:{{ each_vlan.id }}
+     route-target both {{ each_vlan.id }}:{{ each_vlan.id }}
+     redistribute learned
+   !
+{% endif %}
+{% endfor %}
+!
+{% endif %}
+{#/////   END VXLAN VLAN MAPPINGS \\\\\#}
+{#/////   BEGIN BGP PEER GROUP NEIGHBOR   \\\\\#}
+{% if bgp.peer_group is defined %}
+{#/////   BGP GROUP NAME   \\\\\#}
+{% for group in bgp.peer_group %}
+   neighbor {{ group.name }} peer-group
+{#/////   BGP NEIGHBOR GROUP AS   \\\\\#}
+   neighbor {{ group.name }} remote-as {{ group.autonomous_system }}
+{#/////   BGP NEIGHBOR DESCRIPTION   \\\\\#}
+{% if group.description is defined %}
+   neighbor {{ group.name }} description {{ group.description }}
+{% endif %}
+{#/////   BGP UPDATE SOURCE   \\\\\#}
+{% if group.update_source is defined %}
+   neighbor {{ group.name }} update-source {{ group.update_source }}
+{% endif %}
+{#/////   BGP SEND COMMUNITY   \\\\\#}
+{% if group.send_community is defined %}
+   neighbor {{ group.name }} send-community extended
+{% endif %}
+{#/////   BGP MULTIHOP   \\\\\#}
+{% if group.multihop is defined %}
+   neighbor {{ group.name }} ebgp-multihop 5
+{% endif %}
+{#/////   BGP NEIGHBOR PASSWORD   \\\\\#}
+{% if group.password is defined %}
+   neighbor {{ group.name }} password {{ group.password }}
+{% endif %}
+{#/////   BGP NEIGHBOR NEXT-HOP SELF   \\\\\#}
+{% if group.next_hop_self is defined and group.next_hop_self == True %}
+   neighbor {{ group.name }} next-hop-self
+{% endif %}
+{#/////   BGP NEIGHBOR NEXT-HOP UNCHANGED   \\\\\#}
+{% if group.next_hop_unchanged is defined and group.next_hop_unchanged == True %}
+   neighbor {{ group.name }} next-hop-unchanged
+{% endif %}
+{#/////   BGP NEIGHBOR ASSOCIATION   \\\\\#}
+{% for neighbor in group.neighbor %}
+   neighbor {{ neighbor }} peer-group {{ group.name }} 
+{% endfor %}
+{% endfor %}
+{#/////   BGP REDISTRIBUTE ROUTES   \\\\\#}
+{% if bgp.redistribute is defined %}
+{% for route_map in bgp.redistribute %}
+   redistribute {{ route_map }}
+{% endfor %}
+{% endif %}
+   !
+{% endif %}
+{#/////   END BGP PEER GROUP NEIGHBOR   \\\\\#}
+{#/////   BEGIN ADDRESS-FAMILY IPv4 \\\\\#}
+{% for group in bgp.peer_group %}
+{#/////   BGP NEIGHBOR ACTIVATE   \\\\\#}
+{% if group.address_family_ipv4 is defined %} 
+   address-family ipv4
+{% if group.address_family_ipv4 == True %}
+      neighbor {{ group.name }} activate
+{#/////   BGP DEFAULT ORIGINATE   \\\\\#}
+{% if group.default_originate == True %}
+      neighbor {{ group.name }} default-originate
+{% endif %}
+{#/////   BGP NEIGHBOR INBOUND POLICY   \\\\\#}
+{% if group.policy_in is defined %}
+      neighbor {{ group.name }} route-map {{ group.policy_in }} in
+{% endif %}
+{#/////   BGP NEIGHBOR OUTBOUND POLICY   \\\\\#}
+{% if group.policy_out is defined %}
+      neighbor {{ group.name }} route-map {{ group.policy_out }} out
+{% endif %}
+{% else %}
+      no neighbor {{ group.name }} activate
+{% endif %}
+{% endif %}
+{#/////   END ADDRESS-FAMILY IPv4 \\\\\#}
+{#/////   BEGIN ADDRESS-FAMILY IPv6 \\\\\#}
+{% if group.address_family_ipv6 is defined %}
+   address-family ipv6
+{% if group.address_family_ipv6 == True %}
+      neighbor {{ group.name }} activate
+{% else %}
+      no neighbor {{ group.name }} activate
+{% endif %}
+{% endif %}
+{#/////   END ADDRESS-FAMILY IPv6 \\\\\#}
+{#/////   BEGIN ADDRESS-FAMILY EVPN \\\\\#}
+{% if group.address_family_evpn is defined %} 
+   address-family evpn
+{% if group.address_family_evpn == True %}
+      neighbor {{ group.name }} activate
+{% else %}
+      no neighbor {{ group.name }} activate
+{% endif %}
+{% endif %}
+{#/////   END ADDRESS-FAMILY EVPN \\\\\#}
+{% endfor %}
+{#/////   END BGP PEER GROUP NEIGHBOR   \\\\\#}
+{% endif %}

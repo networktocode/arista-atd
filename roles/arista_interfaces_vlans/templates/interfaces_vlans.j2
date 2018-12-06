@@ -1,0 +1,39 @@
+{% if interfaces_vlans is defined %}
+{% for iface in interfaces_vlans %}
+interface {{ iface.name }}
+{% if iface.description is defined %}
+    description {{ iface.description }}
+{% endif %}
+{% if iface.mtu is defined %}
+    mtu {{ iface.mtu }}
+{% endif %}
+{% if iface.mode == 'vlan_l3_ipv4' %}
+    ip address {{ iface.ipv4_address }}
+{% elif iface.mode == 'vlan_l3_ipv6' %}
+    ipv6 address {{ iface.ipv6_address }}
+{% endif %}
+{% if iface.ipv4_secondary is defined %}
+{% for secondary in iface.ipv4_secondary %}
+    ip address {{ secondary }} secondary
+{% endfor %}
+{% endif %}
+{% if iface.virtual_router is defined %}
+    ip virtual-router address {{ iface.virtual_router }}
+{% endif %}
+{% if iface.dhcp_helper is defined %}
+{% for each in iface.dhcp_helper %}
+{% if each == "standard" %}
+    ip helper-address 10.50.8.101
+    ip helper-address 10.135.16.255
+{% elif each == "windows_pxe" %}
+    ip helper-address 10.50.19.160
+{% elif each == "unix_pxe" %}
+    ip helper-address 10.1.1.55
+{% else %}
+    ip helper-address {{ each }}
+{% endif %}
+{% endfor %}
+{% endif %}
+!
+{% endfor %}
+{% endif %}

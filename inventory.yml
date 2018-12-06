@@ -1,0 +1,53 @@
+---
+  all:
+    hosts:
+      awx_task:
+        ansible_connection: docker
+        ansible_python_interpreter: python
+    children:
+      device_roles_spine:
+        hosts:
+          spine01:
+            ansible_host: 10.0.0.3
+          spine02:
+            ansible_host: 10.0.0.4
+        vars:
+            vendor: arista
+            test: False
+            happy: True
+            mgmt_interface: Management1
+            mgmt_netmask: "/24"
+            platform: "vEOS"
+      device_roles_leaf:
+        hosts:
+          leaf01:
+            ansible_host: 10.0.0.5
+          leaf02:
+            ansible_host: 10.0.0.6
+          leaf03:
+            ansible_host: 10.0.0.7
+          leaf04:
+            ansible_host: 10.0.0.8
+        vars:
+            vendor: arista
+            test: False
+            happy: True
+            mgmt_interface: Management1
+            mgmt_netmask: "/24"
+            platform: "vEOS"
+      # mlag3:
+      #   hosts:
+      #     leaf05:
+      #       ansible_host: 10.0.0.9
+      #     leaf06:
+      #       ansible_host: 10.0.0.10
+      #   vars:
+      #     happy: True
+      # mlag4:
+      #   hosts:
+      #     leaf07:
+      #       ansible_host: 10.0.0.11
+      #     leaf08:
+      #       ansible_host: 10.0.0.12
+      #   vars:
+      #     happy: True

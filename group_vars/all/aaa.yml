@@ -1,0 +1,26 @@
+aaa:
+  group:
+    - name: TACACS
+      servers:
+        - destination: 192.168.1.1
+          vrf: MGMT
+        - destination: 192.168.1.2
+          vrf: MGMT
+  authentication:
+    - aaa authentication login default local none
+  accounting:
+    - aaa authorization exec default local none
+  # authorization:
+  #   - aaa accounting exec default start-stop group radius group TACACS
+  users:
+    - name: "ansible"
+      priv: "15"
+      secret: "ansible!"
+  radius_key: "supersecretradiuskey!"
+  radius_server:
+    - host: 192.168.1.1
+      key: "supersecretradiuskey!"
+      vrf: MGMT
+    - host: 192.168.1.2
+      key: "supersecretradiuskey!"
+      vrf: MGMT

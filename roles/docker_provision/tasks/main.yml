@@ -1,0 +1,12 @@
+---
+# tasks file for docker-role
+- copy:
+    src: "{{ local_requirements }}"
+    dest: "{{ remote_requirements }}"
+
+- pip:
+    requirements: "{{ remote_requirements }}"
+    virtualenv: "{{ venv }}"
+    # python3 uses python -m venv
+    #virtualenv_command: /usr/local/bin/python -m venv
+    virtualenv_command: "/usr/bin/virtualenv"

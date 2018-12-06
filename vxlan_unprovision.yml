@@ -1,0 +1,57 @@
+---
+  - name: '### APPLY CONFIGURATION ###'
+    hosts: device_roles_leaf, device_roles_spine
+    connection: local
+    gather_facts: false
+    tasks:
+
+      ######################################################
+      ##### Jinja2 configuration
+      ######################################################
+      - name: apply config
+        eos_config:
+          lines:
+            - default interface Ethernet1
+            - default interface Ethernet2
+            - default interface Ethernet3
+            - default interface Ethernet4
+            - no interface Vlan 11
+            - no interface Vlan 12
+            - no interface Vlan 13
+            - no interface Vlan 14
+            - no mlag configuration
+            - no interface Vlan 4094
+            - no interface Loopback0
+            - no interface Loopback1
+            - no router bgp
+            - no route-map BGP_DENY_ALL
+            - no route-map BGP_DENY_ONLY_DEFAULT_ROUTE
+            - no route-map BGP_LOOPBACKS
+            - no route-map BGP_PERMIT_ALL
+            - no route-map BGP_PERMIT_ONLY_DEFAULT_ROUTE
+            - no route-map BGP_POD1_PUBLIC
+            - no route-map BGP_POD2_PUBLIC
+            - no ip prefix-list ANY
+            - no ip prefix-list DEFAULT_ROUTE
+            - no ip prefix-list LEGACY
+            - no ip prefix-list LOOPBACK0
+            - no ip prefix-list LOOPBACK1
+            - no ip prefix-list VMWARE
+          authorize: true
+          provider:
+            host: "{{ ansible_host }}"
+            transport: eapi
+            validate_certs: no
+            timeout: 60
+
+      - name: Send notification message via Slack all options
+        slack:
+            token: '{{ slack_token }}'
+            msg: 'factory defaulting of {{ inventory_hostname }} is complete'
+            channel: '#ansible'
+            username: 'Ansible on {{ inventory_hostname }}'
+            icon_url: http://alesnosek.com/images/posts/ansible_logo.png
+            link_names: 0
+            parse: 'none'
+        delegate_to: localhost
+

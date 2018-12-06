@@ -1,0 +1,71 @@
+{% if monitoring is defined %}
+{#/////  BEGIN - SYSLOG  \\\\\#}
+{% if monitoring.logging is defined %}
+{#/////  SYSLOG BUFFER SIZE  \\\\\#}
+{% if monitoring.logging.buffered is defined %}
+logging buffered {{ monitoring.logging.buffered }}
+{% endif %}
+{#/////  SYSLOG REPORTING TRAPS  \\\\\#}
+{% if monitoring.logging.traps is defined %}
+logging trap {{ monitoring.logging.traps.level }}
+{% endif %}
+{#/////  SYSLOG SERVERS  \\\\\#}
+{% if monitoring.logging.remote is defined %}
+{% for each_server in monitoring.logging.remote.server %}
+logging vrf {{ monitoring.logging.remote.vrf }} host {{ each_server }}
+{% endfor %}
+{% endif %}
+{#/////  SYSLOG SOURCE INTERFACE  \\\\\#}
+{% if monitoring.logging.source_interface is defined %}
+{% if monitoring.logging.source_interface.vrf is defined %}
+logging vrf {{ monitoring.logging.source_interface.vrf }} source-interface {{ monitoring.logging.source_interface.interface }}
+{% else %}
+logging source-interface {{ monitoring.logging.source_interface.interface }}
+{% endif %}
+{% endif %}
+{#/////  END - SYSLOG  \\\\\#}
+{% endif %}
+!
+{#/////  BEGIN - SNMP  \\\\\#}
+{% if monitoring.snmp is defined %}
+{#/////  SNMP - VIEWS  \\\\\#}
+{% if monitoring.snmp.views is defined %}
+{% for views in monitoring.snmp.views %}
+{% for mibs in views.mibs %}
+snmp-server view {{ views.name }} {{ mibs }} included
+{% endfor %}
+{% endfor %}
+{% endif %}
+{#/////  SNMP - GROUPS  \\\\\#}
+{% if monitoring.snmp.groups is defined %}
+{% for group in monitoring.snmp.groups %}
+snmp-server group {{ group.name }} {{ group.version }} auth {{ group.permissions }} {{ group.view }}
+{% endfor %}
+{% endif %}
+{#/////  SNMP - USERS  \\\\\#}
+{% if monitoring.snmp.users is defined %}
+{% for user in monitoring.snmp.users %}
+snmp-server user {{ user.name }} {{ user.group }} {{ user.version }} auth {{ user.auth_method }} {{ user.auth_password }}
+{% endfor %}
+{% endif %}
+{#/////  SNMP - MANAGER  \\\\\#}
+{% if monitoring.snmp.manager is defined %}
+{#/////  SNMP - MANAGER - HOSTS  \\\\\#}
+{% for hosts in monitoring.snmp.manager.hosts %}
+snmp-server host {{ hosts.server }} vrf {{ hosts.vrf }} version {{ hosts.version }} auth {{ hosts.auth }}
+{% endfor %}
+{% if monitoring.snmp.manager.traps is defined %}
+{% for traps in monitoring.snmp.manager.traps %}
+snmp-server enable traps {{ traps }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{#/////  SNMP - VRF  \\\\\#}
+{% if monitoring.snmp.vrf is defined %}
+{% for vrf in monitoring.snmp.vrf %}
+snmp-server vrf {{ vrf.name }} source-interface {{ vrf.source_interface }}
+snmp-server vrf {{ vrf.name }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endif %} 

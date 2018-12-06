@@ -1,0 +1,18 @@
+{% if route_maps is defined %}
+{% for each_route_map in route_maps %}
+!
+{% for each_sequence in each_route_map.lines %}
+route-map {{ each_route_map.name }} {{ each_sequence.action }} {{ each_sequence.sequence }}
+{% for each_match in each_sequence.match %}
+   match {{ each_match }}
+{% endfor %}
+{% if each_sequence.set is defined %}
+{% for each_set in each_sequence.set %}
+   set {{ each_sequence.set }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+!
+{% endfor %}
+!
+{% endif %}

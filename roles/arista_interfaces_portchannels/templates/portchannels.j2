@@ -1,0 +1,49 @@
+{% if interface_portchannels is defined %}
+{% for each_portchannel in interface_portchannels %}
+interface Port-Channel{{ each_portchannel.id }}
+{% if each_portchannel.description is defined %}
+   description {{ each_portchannel.description }}
+{% endif %}
+{% if each_portchannel.trunk is defined %}
+   switchport mode trunk
+{% if each_portchannel.trunk.trunk_group is defined %}
+   switchport trunk group {{ each_portchannel.trunk.trunk_group }}
+{% endif %}
+{% if each_portchannel.trunk.native_vlan is defined %}
+   switchport trunk native vlan {{ each_portchannel.trunk.native_vlan }}
+{% endif %}
+{% if each_portchannel.trunk.vlan is defined %}
+   switchport trunk allowed vlan {{ each_portchannel.trunk.vlan }}
+{% endif %}
+{% endif %}
+{% if each_portchannel.access is defined %}
+   switchport mode access
+   switchport access vlan {{ each_portchannel.access.vlan }}
+{% endif %}
+{% if each_portchannel.mlag is not defined %}
+{% if each_portchannel.lacp_fallback_individual is defined %}
+   port-channel lacp fallback {{ each_portchannel.lacp_fallback_individual }}
+{% else %}
+   port-channel lacp fallback individual
+{% endif %}
+{% if each_portchannel.lacp_fallback_timeout is defined %}
+   port-channel lacp fallback timeout {{ each_portchannel.lacp_fallback_timeout }}
+{% else %}
+   port-channel lacp fallback timeout 5
+{% endif %}
+{% if each_portchannel.id is defined %}
+{% if each_portchannel.exclude_mlag is not defined %}
+   mlag {{ each_portchannel.id }}
+{% endif %}
+{% endif %}
+{% if each_portchannel.stp_portfast is defined %}
+   {{ each_portchannel.stp_portfast }}
+{% endif %}
+{% if each_portchannel.stp_bpduguard is defined %}
+   {{ each_portchannel.stp_bpduguard }}
+{% endif %}
+{% endif %}
+!
+{% endfor %}
+!
+{% endif %}
