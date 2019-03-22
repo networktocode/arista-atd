@@ -1,0 +1,2 @@
+ansible_user: ntc
+ansible_ssh_pass: 

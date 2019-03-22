@@ -1,0 +1,24 @@
+---
+all:
+  children:
+    spines:
+      hosts:
+        spine1:
+        spine2:
+          ansible_port: 2222
+    leafs:
+      hosts:
+        leaf1:
+        leaf2:
+        leaf3.atd.local:
+          ansible_user: admin
+        192.168.0.17:
+          ansible_host: 192.168.0.17
+  arista:
+    children:
+      spines:
+      leafs:
+    vars:
+      ansible_network_os: eos
+
+
