@@ -1,0 +1,5 @@
+{% for i in interfaces %}
+interface {{ i.name }}
+  ip address {{ i.ip }} {{ i.subnet }}
+  description {{ i.description }}
+{% endfor %}

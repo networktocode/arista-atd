@@ -10,6 +10,13 @@ interfaces_config = template.render(
     interfaces=interfaces
 )
 
-print(interfaces_config)
+destination_file = 'interfaces.cfg'
 
+print('#'* 50)
+print('Generating Configuration')
 
+with open(destination_file, 'w') as f:
+    f.write(interfaces_config)
+
+print('#' * 50)
+print('Configuration output to {}'.format(destination_file))

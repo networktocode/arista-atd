@@ -1,5 +1,6 @@
 {% for iface in interfaces %}
 interface {{ iface.name }}
-  ip address {{ iface.ip_address }} {{ subnet }}
-  description {{ description }}
+  ip address {{ iface.ip_address }} {{ iface.subnet }}
+  description {{ iface.description }}
 {% endfor %}
+
