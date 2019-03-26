@@ -2,16 +2,16 @@
 # to run this playbook
 # ansible-playbook show_version.yml -i hosts.yml
 
-hosts: ios  
-connection: local
-gather_facts: no
-
-tasks:
-  - name: "Run Show Version on Hosts"
-    ios_command:
-      commands: show version
-    register: version
-
-  - name: "Show output"
-    debug:
-      msg: "{{ version }}"
+- hosts: ios  
+  connection: local
+  gather_facts: no
+  
+  tasks:
+    - name: "Run Show Version on Hosts"
+      ios_command:
+        commands: show version
+      register: version
+  
+    - name: "Show output"
+      debug:
+        msg: "{{ version.stdout_lines }}"
