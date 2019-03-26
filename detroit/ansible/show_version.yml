@@ -1,0 +1,18 @@
+---
+# to run this playbook
+# ansible-playbook show_version.yml -i hosts.yml
+
+- hosts: eos  
+  connection: local
+  gather_facts: no
+  
+  tasks:
+    - name: "Run Show Version on Hosts"
+      eos_command:
+        commands: show version
+      register: version
+  
+    - name: "Show output"
+      debug:
+        msg: "{{ version.stdout_lines }}"
+  

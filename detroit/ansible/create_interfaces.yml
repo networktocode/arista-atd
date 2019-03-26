@@ -1,0 +1,24 @@
+---
+- hosts: ['ios']
+  gather_facts: no
+
+  tasks:
+    - name: "GENERATE INTERFACE CONFIG FROM TEMPLATE [SIMPLE]"
+      template:
+        src: './templates/ios_interfaces.j2'
+        dest: "./configs/{{ inventory_hostname }}_interfaces.cfg"
+      delegate_to: localhost
+
+
+- hosts: ['eos']
+  gather_facts: no
+
+  tasks:
+    - name: "GENERATE INTERFACE CONFIG FROM TEMPLATE [ADVANCED]"
+      template: 
+        # Using Built In Variables
+        # Great to use when we name files consistently
+        src: '{{ ansible_network_os }}_interfaces.j2'
+        dest: "{{ config_dir }}/{{ inventory_hostname }}_interfaces.cfg"
+      delegate_to: localhost
+      

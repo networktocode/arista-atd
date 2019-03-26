@@ -1,0 +1,15 @@
+---
+device_id: 52
+ansible_host: "10.0.0.{{ device_id }}" #mgmt interface
+
+interfaces:
+  - name: loopback5555
+    ip_address: "10.10.{{ device_id }}.1"
+    subnet: 255.255.255.255
+    description: "BGP Neighbor 5.5.5.5 Update Source"
+  - name: loopback30
+    ip_address: "192.168.0.{{ device_id }}"
+    subnet: 255.255.255.255
+    description: "Best Loopback Ever"
+
+

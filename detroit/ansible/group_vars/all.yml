@@ -1,0 +1,10 @@
+ansible_user: admin
+ansible_ssh_pass: admin
+tacacs_servers:
+  - 192.168.1.16
+  - 192.168.2.16
+dns_servers:
+  - 192.168.1.16
+  - 192.168.2.16
+snmp_server: 192.168.1.17
+config_dir: "{{ playbook_dir }}/configs"

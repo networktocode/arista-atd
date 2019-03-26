@@ -1,0 +1,6 @@
+ansible_network_os: eos
+ansible_connection: network_cli
+ansible_become: yes
+ansible_become_method: enable
+mgmt_interface: 'Management1'
+mgmt_vrf: 'MGMT'
