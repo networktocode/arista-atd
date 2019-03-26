@@ -2,7 +2,9 @@
 - name: gigabit1
   ip: 10.0.0.5
   subnet: 255.255.255.255
+  description: Management
 
 - name: gigabit2
   ip: 10.5.0.1
   subnet: 255.255.255.255
+  description: "BGP Update Source"
